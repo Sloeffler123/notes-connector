@@ -1,4 +1,8 @@
 import customtkinter
+import tkinter
+from border_frame import BorderFrame
+from text_boxes import *
+
 
 class MainScreen(customtkinter.CTk):
     def __init__(self):
@@ -11,8 +15,9 @@ class MainScreen(customtkinter.CTk):
         self.grid_columnconfigure(0, weight=1)
         
         self.create_widgets()
-        
         self.main_frame = customtkinter.CTkFrame(master=self)
+
+        self.active_frame = None
 
         self.main_frame.grid(row=0, column=0, sticky="nesw", pady=(28,0))
         self.main_frame.configure()
@@ -38,7 +43,7 @@ class MainScreen(customtkinter.CTk):
         self.delete_button = customtkinter.CTkButton(button_frame, text="Delete", command=self.on_delete)
         self.delete_button.grid(row=0, column=3, padx=5)
 
-        self.font_positive_button = customtkinter.CTkButton(button_frame, text="+", width=10)
+        self.font_positive_button = customtkinter.CTkButton(button_frame, text="+", width=10, command=self.on_positive_button)
         self.font_positive_button.grid(row=0, column=4, padx=5)
 
         self.font_number_entry = customtkinter.CTkEntry(button_frame, width=30)
@@ -54,12 +59,21 @@ class MainScreen(customtkinter.CTk):
     def create_text_box(self, event):
         x = event.x
         y = event.y
-        tb1 = TextBoxes(self.main_frame, label_text="tb1")
-        tb1.place(x=x,y=y)
+        border_frame = BorderFrame(self.main_frame, self)
+        border_frame.place(x=x,y=y)
+        tb1 = TextBoxes(border_frame.frame)
+        tb1.pack(fill="both", expand=True)
+        
         self.unbind("<Button-1>")
 
+    
+    def on_positive_button(self):
+        if self.active_frame is None:
+            return 
+        self.active_frame.get_highlighted_text()
+        # get highlighted text and make font bigger
+
     def on_add(self):
-        # going to have to get the location of the cursor and place box there once left click is pressed
         self.bind("<Button-1>", self.create_text_box)
 
     def on_open(self):
@@ -77,24 +91,7 @@ class MainScreen(customtkinter.CTk):
         else:
             customtkinter.set_appearance_mode("dark")
     
-class TextBoxes(customtkinter.CTkFrame):
-    def __init__(self, parent, label_text):
-        super().__init__(parent)
 
-        # self.label = customtkinter.CTkLabel(self)
-        # self.label.grid(row=0, column=0)
-
-        # make first line in box the text box
-        # then everything else is the body text
-        self.textbox = customtkinter.CTkTextbox(self, corner_radius=5, border_width=5)
-        self.textbox.grid(row=0, column=0)
-
-    # top of screen bar
-        # add button that adds a text box
-        # zoom in and out option
-        # dark mode
-        # Save button
-        # open button
     
 # main()
 screen = MainScreen()
