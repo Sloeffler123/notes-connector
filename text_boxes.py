@@ -10,17 +10,17 @@ class TextBoxes(customtkinter.CTkFrame):
 
 
         self.board_frame = customtkinter.CTkFrame(self, border_width=BORDER_WIDTH, corner_radius=CORNER_RADIUS)
-        self.board_frame.pack()
+        self.board_frame.pack(fill="both", expand=True)
+        self.board_frame.configure(border_color="gray")
 
-        self.textbox = customtkinter.CTkTextbox(self.board_frame, border_width=0)
-        self.textbox.pack()
+        self.textbox = customtkinter.CTkTextbox(self.board_frame, width=150, height=150)
+        self.textbox.pack(fill="both", expand=True, padx=BORDER_WIDTH, pady=BORDER_WIDTH)
 
         self.root = self.winfo_toplevel()
 
-        self.textbox.bind("<FocusIn>", self.on_focus)
-        self.textbox.bind("<B1-Motion>", self.on_drag)
-        self.textbox.bind("<Button-1>", self.on_left_click)
-        self.textbox.bind("<ButtonRelease>", self.on_drop)
+        self.board_frame.bind("<FocusIn>", self.on_focus)
+        self.board_frame.bind("<B1-Motion>", self.on_drag)
+        self.board_frame.bind("<ButtonRelease>", self.on_drop)
 
     def get_highlighted_text(self):
         try:
@@ -30,20 +30,12 @@ class TextBoxes(customtkinter.CTkFrame):
             self.textbox.tag_config("sel_txt", background="yellow", foreground="red")
         except tkinter.TclError:
             pass 
-    
-    def on_left_click(self, event):
-        
-        self.board_frame
-
-        self.dragging = True
 
     def on_focus(self, event):
         self.app.active_textbox = self
     
     def on_drag(self, event):
-        if self.dragging:
-            self.place(x=self.root.winfo_pointerx()-self.root.winfo_rootx(), y=self.root.winfo_pointery()-self.root.winfo_rooty())
+        self.place(x=self.root.winfo_pointerx()-self.root.winfo_rootx(), y=self.root.winfo_pointery()-self.root.winfo_rooty())
 
     def on_drop(self, event):
-        if self.dragging:
-            self.place(x=self.root.winfo_pointerx()-self.root.winfo_rootx(), y=self.root.winfo_pointery()-self.root.winfo_rooty())
+        self.place(x=self.root.winfo_pointerx()-self.root.winfo_rootx(), y=self.root.winfo_pointery()-self.root.winfo_rooty())
